@@ -1,94 +1,66 @@
-// // models/Transaction.ts
-// //C:\Users\User\OneDrive\Desktop\New folder\models\User.ts
-// import mongoose from "mongoose";
-
-// const TransactionSchema = new mongoose.Schema(
-//   {
-//     userId: {
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: "User",
-//       required: true,
-//       index: true,
-//     },
-
-//     upiId: {
-//       type: String,
-//       required: true,
-//     },
-
-//     amount: {
-//       type: Number,
-//       required: true,
-//     },
-
-//     // ML outputs
-//     mlProbability: Number,
-//     riskScore: Number,
-//     riskLevel: {
-//       type: String,
-//       enum: ["LOW", "MEDIUM", "HIGH"],
-//     },
-
-//     // Explainability
-//     featureSnapshot: Object,
-
-//     status: {
-//       type: String,
-//       enum: ["SUCCESS", "FAILED", "BLOCKED"],
-//       default: "SUCCESS",
-//     },
-//   },
-//   { timestamps: true }
-// );
-
-// export default mongoose.models.Transaction ||
-//   mongoose.model("Transaction", TransactionSchema);
-
-// models/User.ts
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema(
+const TransactionSchema = new mongoose.Schema(
   {
-    email: {
+    transactionId: {
       type: String,
       required: true,
       unique: true,
+      default: () => `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    },
+    
+    userId: {
+      type: String,
+      required: true,
       index: true,
     },
-
-    passwordHash: {
+    
+    upiId: {
       type: String,
       required: true,
     },
-
-    fullName: {
-      type: String,
+    
+    amount: {
+      type: Number,
+      required: true,
     },
-
-    // Fraud / ML relevant fields
-    accountStatus: {   
-      type: String,
-      enum: ["ACTIVE", "SUSPENDED"],
-      default: "ACTIVE",
+    
+    mlProbability: {
+      type: Number,
+      required: true,
     },
-
+    
     riskScore: {
       type: Number,
-      default: 0,
+      required: true,
     },
-
-    lastLoginAt: Date,
-
-    devices: [
-      {
-        deviceId: String,
-        firstSeenAt: Date,
-        lastSeenAt: Date,
-      },
-    ],
+    
+    riskLevel: {
+      type: String,
+      enum: ["LOW", "MEDIUM", "HIGH"],
+      required: true,
+    },
+    
+    decision: {
+      type: String,
+      enum: ["ALLOW", "FLAG", "BLOCK"],
+      required: true,
+    },
+    
+    status: {
+      type: String,
+      enum: ["SUCCESS", "FAILED", "PENDING"],
+      default: "SUCCESS",
+    },
+    
+    featureSnapshot: {
+      type: mongoose.Schema.Types.Mixed,
+    },
   },
-  { timestamps: true }
+  { 
+    timestamps: true 
+  }
 );
 
-export default mongoose.models.User ||
-  mongoose.model("User", UserSchema);
+export default mongoose.models.Transaction ||
+  mongoose.model("Transaction", TransactionSchema);
