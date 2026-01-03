@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Shield, Mail, Lock, User, ArrowRight } from "lucide-react";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -12,20 +14,32 @@ export default function SignupPage() {
   async function handleSignup() {
     setLoading(true);
 
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, fullName }),
-    });
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, fullName }),
+      });
 
-    setLoading(false);
-
-    if (res.ok) {
-      alert("Signup successful. Please login.");
-      // Add router.push("/auth/login") after importing useRouter
-    } else {
       const data = await res.json();
-      alert(data.error || "Signup failed");
+
+      if (res.ok) {
+        // Store token and redirect to dashboard
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          router.push("/dashboard");
+        } else {
+          alert("Signup successful. Please login.");
+          router.push("/auth/login");
+        }
+      } else {
+        alert(data.error || "Signup failed");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -74,7 +88,7 @@ export default function SignupPage() {
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="email"
-                  placeholder="soham23@ok.com"
+                  placeholder="your.email@example.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
