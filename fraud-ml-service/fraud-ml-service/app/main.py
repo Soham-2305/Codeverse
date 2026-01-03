@@ -1,23 +1,24 @@
+# app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.predict import router as predict_router
+from app.routers import predict, alerts
+from app.config import APP_NAME
 
-app = FastAPI(title="Fraud ML Prediction Service")
+app = FastAPI(title=APP_NAME)
 
-# ✅ CORS CONFIG (IMPORTANT)
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",     # Next.js
-        "http://127.0.0.1:3000"
-    ],
+    allow_origins=["http://localhost:3000"],  # Your Next.js frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(predict_router, prefix="/api")
+# Include routers
+app.include_router(predict.router, prefix="/api/v1", tags=["predictions"])
+app.include_router(alerts.router, prefix="/api/v1", tags=["alerts"])
 
 @app.get("/health")
-def health():
-    return {"status": "ok"}
+def health_check():
+    return {"status": "healthy"}
