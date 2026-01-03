@@ -1,37 +1,3 @@
-// import mongoose from "mongoose"
-
-// const MONGODB_URI = process.env.MONGODB_URI!
-
-// if (!MONGODB_URI) {
-//   throw new Error("Please define the MONGODB_URI environment variable")
-// }
-
-// let cached = (global as any).mongoose
-
-// if (!cached) {
-//   cached = (global as any).mongoose = { conn: null, promise: null }
-// }
-
-// async function dbConnect() {
-//   if (cached.conn) {
-//     return cached.conn
-//   }
-
-//   if (!cached.promise) {
-//     const opts = {
-//       bufferCommands: false,
-//     }
-
-//     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-//       return mongoose
-//     })
-//   }
-//   cached.conn = await cached.promise
-//   console.log("DB connected")
-//   return cached.conn
-// }
-
-// export default dbConnect
 import mongoose from "mongoose"
 
 const MONGODB_URI = "mongodb+srv://rishirajcodes23297020_db_user:frauddetection@cluster0.gwkyqhx.mongodb.net/?appName=Cluster0"
@@ -53,16 +19,14 @@ async function dbConnect() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    }
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose
-    })
+    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+      console.log("✅ MongoDB connected successfully");
+      return mongoose;
+    });
   }
-  cached.conn = await cached.promise
-  return cached.conn
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
 
-export default dbConnect
+export default dbConnect;

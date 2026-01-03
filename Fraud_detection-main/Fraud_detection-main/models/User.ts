@@ -1,5 +1,3 @@
-// // models/User.ts
-
 // import mongoose from "mongoose";
 
 // const UserSchema = new mongoose.Schema(
@@ -21,7 +19,7 @@
 //     },
 
 //     // Fraud / ML relevant fields
-//     accountStatus: {
+//     accountStatus: {   
 //       type: String,
 //       enum: ["ACTIVE", "SUSPENDED"],
 //       default: "ACTIVE",
@@ -48,7 +46,6 @@
 // export default mongoose.models.User ||
 //   mongoose.model("User", UserSchema);
 
-// models/User.ts
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
@@ -69,6 +66,19 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
 
+    // New profile fields
+    profilePhoto: {
+      type: String, // Base64 or URL
+    },
+
+    dateOfBirth: {
+      type: Date,
+    },
+
+    panCardNumber: {
+      type: String,
+    },
+
     // Fraud / ML relevant fields
     accountStatus: {   
       type: String,
@@ -86,6 +96,7 @@ const UserSchema = new mongoose.Schema(
     devices: [
       {
         deviceId: String,
+        ipAddress: String, // Device IP
         firstSeenAt: Date,
         lastSeenAt: Date,
       },
